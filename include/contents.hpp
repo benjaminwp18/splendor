@@ -47,8 +47,8 @@ enum Gem {
 static const std::size_t NUM_LEVELS = 3;
 static const std::size_t NUM_GEMS = 5;
 
-std::array<Gem, NUM_GEMS> GEMS{WHITE, GREEN, BLACK, BLUE, RED};
-std::array<std::string, NUM_GEMS> GEM_TO_STRING{"WHITE", "GREEN", "BLACK", "BLUE", "RED"};
+static const std::array<Gem, NUM_GEMS> GEMS{WHITE, GREEN, BLACK, BLUE, RED};
+static const std::array<std::string, NUM_GEMS> GEM_TO_STRING{"WHITE", "GREEN", "BLACK", "BLUE", "RED"};
 
 class Cost {
 private:
@@ -58,14 +58,9 @@ public:
     Cost(const std::array<unsigned int, NUM_GEMS> &costs) :
         costs(costs) {}
 
-    unsigned int getCost(Gem gem) const {
-        return costs[gem];
-    }
+    unsigned int getCost(Gem gem) const;
 
-    std::string toString() const {
-        return (std::ostringstream() <<
-                costs[0] << costs[1] << costs[2] << costs[3] << costs[4]).str();
-    }
+    std::string toString() const;
 };
 
 class Card {
@@ -78,23 +73,17 @@ public:
     Card(unsigned int level, unsigned int points, Gem output, const Cost &cost) :
         level(level), points(points), output(output), cost(cost) {}
 
-    std::string toString() const {
-        return (std::ostringstream() << "Card: l" << level << " p" << points << ": " <<
-                cost.toString() << " -> " << GEM_TO_STRING[output]).str();
-    }
+    std::string toString() const;
 };
 
 class Noble {
 public:
     const Cost cost;
-    static const unsigned int points = 3;
+    const unsigned int points = 3;
 
     Noble(const Cost &cost) : cost(cost) {}
 
-    std::string toString() const {
-        return (std::ostringstream() <<
-                "Noble: p" << points << ": " << cost.toString()).str();
-    }
+    std::string toString() const;
 };
 
 const std::array<std::vector<Card>, NUM_LEVELS> CARDS{
@@ -132,6 +121,7 @@ const std::array<Noble, 10> NOBLES{
 #undef __UNWRAP
 #undef __CARDS_FLAT
 #undef __CARDS_VA
+
 #undef GEN_CARDS
 #undef GEN_CARDS_ISO
 #undef GEN_NOBLES_ISO
