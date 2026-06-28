@@ -4,6 +4,9 @@
 #include <assert.h>
 #include <sstream>
 
+#ifndef __MONEY_INCLUDE
+#define __MONEY_INCLUDE
+
 enum class Gem {
     DIAMOND  = 0,  // WHITE
     EMERALD  = 1,  // GREEN
@@ -21,6 +24,17 @@ enum class Currency {
     GOLD     = 5   // WILD
 };
 
+const std::size_t NUM_GEMS = 5;
+const std::size_t NUM_CURRENCIES = NUM_GEMS + 1;
+
+const std::array<Gem, NUM_GEMS> GEMS{Gem::DIAMOND, Gem::EMERALD, Gem::ONYX, Gem::SAPPHIRE, Gem::RUBY};
+const std::array<Currency, NUM_CURRENCIES> CURRENCIES{Currency::DIAMOND, Currency::EMERALD, Currency::ONYX, Currency::SAPPHIRE, Currency::RUBY, Currency::GOLD};
+const std::array<std::string, NUM_CURRENCIES> CURRENCY_TO_STRING{"DIAMOND", "EMERALD", "ONYX", "SAPPHIRE", "RUBY", "GOLD"};
+
+constexpr Currency gemToCurrency(Gem gem) {
+    return CURRENCIES[static_cast<std::size_t>(gem)];
+}
+
 class GemWrapper {
 private:
     Gem gem;
@@ -32,7 +46,7 @@ public:
     constexpr operator Currency() const { return gemToCurrency(gem); }
     explicit operator bool() const = delete;
 
-    constexpr std::size_t asIndex() { return static_cast<std::size_t>(gem); }
+    constexpr std::size_t asIndex() const { return static_cast<std::size_t>(gem); }
 };
 
 class CurrencyWrapper {
@@ -46,19 +60,8 @@ public:
     constexpr operator Currency() const { return currency; }
     explicit operator bool() const = delete;
 
-    constexpr std::size_t asIndex() { return static_cast<std::size_t>(currency); }
+    constexpr std::size_t asIndex() const { return static_cast<std::size_t>(currency); }
 };
-
-const std::size_t NUM_GEMS = 5;
-const std::size_t NUM_CURRENCIES = NUM_GEMS + 1;
-
-const std::array<Gem, NUM_GEMS> GEMS{Gem::DIAMOND, Gem::EMERALD, Gem::ONYX, Gem::SAPPHIRE, Gem::RUBY};
-const std::array<Currency, NUM_CURRENCIES> CURRENCIES{Currency::DIAMOND, Currency::EMERALD, Currency::ONYX, Currency::SAPPHIRE, Currency::RUBY, Currency::GOLD};
-const std::array<std::string, NUM_CURRENCIES> CURRENCY_TO_STRING{"DIAMOND", "EMERALD", "ONYX", "SAPPHIRE", "RUBY", "GOLD"};
-
-Currency gemToCurrency(Gem gem) {
-    return CURRENCIES[static_cast<std::size_t>(gem)];
-}
 
 class Cost {
 private:
@@ -88,3 +91,5 @@ public:
     bool tryWithdraw(const Cost& cost);
     bool canAfford(const Cost& cost);
 };
+
+#endif  // __MONEY_INCLUDE

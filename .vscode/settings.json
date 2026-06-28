@@ -1,0 +1,5 @@
+{
+    "c-cpp-flylint.clang.extraArgs": [
+        "-p ./build"  // Use build/compile_commands.json to find include dir
+    ]
+}
