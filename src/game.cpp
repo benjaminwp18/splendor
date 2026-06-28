@@ -1,7 +1,2 @@
-#include <vector>
+#include "game.hpp"
 
-#include "contents.hpp"
-
-class Game {
-    std::array<std::vector<Card&>, 3> levels;
-};

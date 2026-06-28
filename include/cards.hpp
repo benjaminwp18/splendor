@@ -1,9 +1,7 @@
-#include <iostream>
-#include <array>
-#include <vector>
-#include <algorithm>
-#include <string>
 #include <sstream>
+#include <vector>
+
+#include <money.hpp>
 
 #ifndef __CONTENTS_INCLUDE
 #define __CONTENTS_INCLUDE
@@ -36,33 +34,6 @@
     Noble(std::array<unsigned int, 5>{c2, c3, c4, c0, c1}), \
     Noble(std::array<unsigned int, 5>{c1, c2, c3, c4, c0})
 
-enum Gem {
-    WHITE = 0,
-    GREEN = 1,
-    BLACK = 2,
-    BLUE = 3,
-    RED = 4
-};
-
-static const std::size_t NUM_LEVELS = 3;
-static const std::size_t NUM_GEMS = 5;
-
-static const std::array<Gem, NUM_GEMS> GEMS{WHITE, GREEN, BLACK, BLUE, RED};
-static const std::array<std::string, NUM_GEMS> GEM_TO_STRING{"WHITE", "GREEN", "BLACK", "BLUE", "RED"};
-
-class Cost {
-private:
-    const std::array<unsigned int, NUM_GEMS> costs;
-
-public:
-    Cost(const std::array<unsigned int, NUM_GEMS> &costs) :
-        costs(costs) {}
-
-    unsigned int getCost(Gem gem) const;
-
-    std::string toString() const;
-};
-
 class Card {
 public:
     const unsigned int level;
@@ -70,7 +41,7 @@ public:
     const Gem output;
     const Cost cost;
 
-    Card(unsigned int level, unsigned int points, Gem output, const Cost &cost) :
+    Card(unsigned int level, unsigned int points, Gem output, const Cost& cost) :
         level(level), points(points), output(output), cost(cost) {}
 
     std::string toString() const;
@@ -81,12 +52,12 @@ public:
     const Cost cost;
     const unsigned int points = 3;
 
-    Noble(const Cost &cost) : cost(cost) {}
+    Noble(const Cost& cost) : cost(cost) {}
 
     std::string toString() const;
 };
 
-const std::array<std::vector<Card>, NUM_LEVELS> CARDS{
+const std::array<std::vector<Card>, 3> CARDS{
     std::vector<Card>{
         GEN_CARDS_ISO(0, 0, (0, 1, 1, 1, 1)),
         GEN_CARDS_ISO(0, 0, (0, 2, 1, 1, 1)),
