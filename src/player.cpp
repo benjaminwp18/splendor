@@ -5,7 +5,8 @@ bool Player::canAfford(const Cost& cost) {
     int remainder = 0;
 
     for (Gem gem : GEMS) {
-        remainder = static_cast<int>(cost.forGem(gem)) - bonuses.getBalance(gem) - bank.getBalance(gem);
+        remainder = static_cast<int>(cost.forGem(gem))
+                    - bonuses.getBalance(gem) - bank.getBalance(gem);
         if (remainder > 0) {
             if (wildsLeft >= remainder) {
                 wildsLeft -= remainder;
@@ -19,9 +20,9 @@ bool Player::canAfford(const Cost& cost) {
     return true;
 }
 
-bool Player::tryPay(const Cost& cost) {
+void Player::tryPay(const Cost& cost) noexcept(false) {
     if (!canAfford(cost)) {
-        return false;
+        throw InsufficientFundsException();
     }
 
     int realCost = 0;
@@ -30,24 +31,56 @@ bool Player::tryPay(const Cost& cost) {
         realCost = static_cast<int>(cost.forGem(gem)) - bonuses.getBalance(gem);
 
         // realCost negative -> bonuses took care of purchase
-        if (realCost >= 0 && !bank.tryWithdraw(gem, realCost)) {
-            if (realCost > bank.getBalance(gem)) {
-                assert(bank.tryWithdraw(Currency::GOLD, realCost - bank.getBalance(gem)));
+        if (realCost >= 0) {
+            if (bank.getBalance(gem) >= realCost) {
+                bank.tryWithdraw(gem, realCost);
             }
-            assert(bank.tryWithdraw(gem, bank.getBalance(gem)));
+            else {
+                if (realCost > bank.getBalance(gem)) {
+                    bank.tryWithdraw(Currency::GOLD, realCost - bank.getBalance(gem));
+                }
+                bank.tryWithdraw(gem, bank.getBalance(gem));
+            }
         }
     }
-
-    return true;
 }
 
-void Player::buildCard(std::reference_wrapper<Card> card) {
+void Player::buildCard(Card& card) {
     builtCards.push_back(card);
-    bonuses.deposit(card.get().output, 1);
-    points += card.get().points;
+    bonuses.deposit(card.output, 1);
+    points += card.points;
 }
 
-void Player::visitFromNoble(std::reference_wrapper<Noble> noble) {
+bool Player::canHostNoble(Noble& noble) {
+    return bonuses.canAfford(noble.cost);
+}
+
+void Player::hostNoble(Noble& noble) {
     nobles.push_back(noble);
-    points += noble.get().points;
+    points += noble.points;
+}
+
+std::string Player::toString() const {
+    std::ostringstream stream;
+
+    stream << "Player: \n\tCards:\n";
+    for (CardRef card : builtCards) {
+        stream << "\t\t" << card.get().toString() << "\n";
+    }
+
+    stream << "\tReserve:\n";
+    for (CardRef card : reservedCards) {
+        stream << "\t\t" << card.get().toString() << "\n";
+    }
+
+    stream << "\tNobles:\n";
+    for (NobleRef noble : nobles) {
+        stream << "\t\t" << noble.get().toString() << "\n";
+    }
+
+    stream << "\tBank: " << bank.toString() << "\n";
+    stream << "\tBonuses: " << bonuses.toString() << "\n";
+    stream << "\tPoints: " << points;
+
+    return stream.str();
 }

@@ -57,6 +57,9 @@ public:
     std::string toString() const;
 };
 
+typedef std::reference_wrapper<const Card> CardRef;
+typedef std::reference_wrapper<const Noble> NobleRef;
+
 const std::array<std::vector<Card>, 3> CARDS{
     std::vector<Card>{
         GEN_CARDS_ISO(0, 0, (0, 1, 1, 1, 1)),
@@ -84,7 +87,7 @@ const std::array<std::vector<Card>, 3> CARDS{
     },
 };
 
-const std::array<Noble, 10> NOBLES{
+const std::vector<Noble> NOBLES{
     GEN_NOBLES_ISO(4, 0, 4, 0, 0),
     GEN_NOBLES_ISO(3, 0, 3, 3, 0)
 };

@@ -1,6 +1,8 @@
 #include <vector>
 #include <functional>
 #include <assert.h>
+#include <numeric>
+#include <sstream>
 
 #include "money.hpp"
 #include "cards.hpp"
@@ -9,17 +11,21 @@
 #define __PLAYER_INCLUDE
 
 class Player {
-    std::vector<std::reference_wrapper<Card>> builtCards;
-    std::vector<std::reference_wrapper<Card>> reservedCards;
-    std::vector<std::reference_wrapper<Noble>> nobles;
+public:
+    std::vector<CardRef> builtCards;
+    std::vector<CardRef> reservedCards;
+    std::vector<NobleRef> nobles;
     Bank bank;
     Bank bonuses;
-    unsigned int points;
+    unsigned int points = 0;
 
     bool canAfford(const Cost& cost);
-    bool tryPay(const Cost& cost);
-    void buildCard(std::reference_wrapper<Card> card);
-    void visitFromNoble(std::reference_wrapper<Noble> noble);
+    void tryPay(const Cost& cost) noexcept(false);
+    void buildCard(Card& card);
+    bool canHostNoble(Noble& noble);
+    void hostNoble(Noble& noble);
+
+    std::string toString() const;
 };
 
 #endif  // __PLAYER_INCLUDE

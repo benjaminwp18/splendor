@@ -3,6 +3,7 @@
 #include <string>
 #include <assert.h>
 #include <sstream>
+#include <exception>
 
 #ifndef __MONEY_INCLUDE
 #define __MONEY_INCLUDE
@@ -63,6 +64,14 @@ public:
     constexpr std::size_t asIndex() const { return static_cast<std::size_t>(currency); }
 };
 
+std::string currencyToString(CurrencyWrapper currency);
+
+class InsufficientFundsException : public std::exception {
+    const char* what() const noexcept override {
+        return "Insufficient funds for withdrawal";
+    }
+};
+
 class Cost {
 private:
     const std::array<unsigned int, NUM_GEMS> costs;
@@ -87,9 +96,11 @@ public:
 
     unsigned int getBalance(CurrencyWrapper currency);
     unsigned int deposit(CurrencyWrapper currency, unsigned int amount);
-    bool tryWithdraw(CurrencyWrapper currency, unsigned int amount);
-    bool tryWithdraw(const Cost& cost);
+    void tryWithdraw(CurrencyWrapper currency, unsigned int amount) noexcept(false);
+    void tryWithdraw(const Cost& cost) noexcept(false);
     bool canAfford(const Cost& cost);
+
+    std::string toString() const;
 };
 
 #endif  // __MONEY_INCLUDE
