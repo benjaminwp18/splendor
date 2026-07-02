@@ -13,15 +13,19 @@ std::string Cost::toString() const {
             << costs[0] << costs[1] << costs[2] << costs[3] << costs[4]).str();
 }
 
-unsigned int Bank::getBalance(CurrencyWrapper currency) {
+unsigned int Bank::getBalance(CurrencyWrapper currency) const {
     return currencies[currency.asIndex()];
+}
+
+unsigned int Bank::totalWealth() const {
+    return std::accumulate(currencies.begin(), currencies.end(), 0U);
 }
 
 unsigned int Bank::deposit(CurrencyWrapper currency, unsigned int amount) {
     return currencies[currency.asIndex()] += amount;
 }
 
-bool Bank::canAfford(const Cost& cost) {
+bool Bank::canAfford(const Cost& cost) const {
     for (Gem gem : GEMS) {
         if (this->getBalance(gemToCurrency(gem)) < cost.forGem(gem)) {
             return false;

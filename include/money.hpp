@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <sstream>
 #include <exception>
+#include <numeric>
 
 #ifndef __MONEY_INCLUDE
 #define __MONEY_INCLUDE
@@ -94,11 +95,12 @@ public:
         currencies(currencies) {}
     Bank() : currencies(std::array<unsigned int, NUM_CURRENCIES>()) {}
 
-    unsigned int getBalance(CurrencyWrapper currency);
+    unsigned int getBalance(CurrencyWrapper currency) const;
+    unsigned int totalWealth() const;
     unsigned int deposit(CurrencyWrapper currency, unsigned int amount);
     void tryWithdraw(CurrencyWrapper currency, unsigned int amount) noexcept(false);
     void tryWithdraw(const Cost& cost) noexcept(false);
-    bool canAfford(const Cost& cost);
+    bool canAfford(const Cost& cost) const;
 
     std::string toString() const;
 };

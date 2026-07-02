@@ -10,8 +10,16 @@
 #ifndef __PLAYER_INCLUDE
 #define __PLAYER_INCLUDE
 
+const std::size_t MAX_RESERVATIONS = 3;
+const unsigned int MAX_BANK_WEALTH = 10;
+
 class Player {
+private:
+    bool canAfford(const Cost& cost) const;
+    void tryPay(const Cost& cost) noexcept(false);
+
 public:
+    // TODO: the mutable views of these fields could probably be private?
     std::vector<CardRef> builtCards;
     std::vector<CardRef> reservedCards;
     std::vector<NobleRef> nobles;
@@ -19,11 +27,15 @@ public:
     Bank bonuses;
     unsigned int points = 0;
 
-    bool canAfford(const Cost& cost);
-    void tryPay(const Cost& cost) noexcept(false);
-    void buildCard(Card& card);
-    bool canHostNoble(Noble& noble);
-    void hostNoble(Noble& noble);
+    bool canBuildCard(const Card& card) const;
+    void tryBuildCard(const Card& card) noexcept(false);
+    bool canHostNoble(const Noble& noble) const;
+    void hostNoble(const Noble& noble);
+    bool canReserve() const;
+    void tryReserve(const Card& card) noexcept(false);
+    bool canBuildReserved(std::size_t reserveIdx) const;
+    void tryBuildReserved(std::size_t reserveIdx) noexcept(false);
+    bool isTooRich() const;
 
     std::string toString() const;
 };

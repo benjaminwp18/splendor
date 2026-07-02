@@ -34,6 +34,12 @@
     Noble(std::array<unsigned int, 5>{c2, c3, c4, c0, c1}), \
     Noble(std::array<unsigned int, 5>{c1, c2, c3, c4, c0})
 
+class NoCardsException : public std::exception {
+    const char* what() const noexcept override {
+        return "Requested card(s) do not exist";
+    }
+};
+
 class Card {
 public:
     const unsigned int level;
